@@ -1,0 +1,21 @@
+:root {
+  --primary: rgba(255, 203, 5, 1);
+  --secondary: rgba(61, 125, 202, 1);
+  --tertiary: rgba(0, 58, 112, 1);
+  --text-primary: rgba(0, 58, 112, 1);
+  --bg-color: rgba(255, 255, 255, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  min-height: 100%;
+  font-family: "Vollkorn", serif;
+  background-color: #eaeaea;
+  color: var(--text-primary);
+}
