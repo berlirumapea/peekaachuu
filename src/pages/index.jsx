@@ -9,9 +9,7 @@ import Container from "../components/Container";
 
 import client from "../app-apollo-client";
 import { PokemonsQuery } from "../queries";
-import { useMutation, useQuery } from "@apollo/client";
-import { usePokemons } from "../usePokemons";
-import { pokemonsVar } from "../app-apollo-cache";
+import { useQuery } from "@apollo/client";
 
 export async function getStaticProps() {
   const { data } = await client.query({
