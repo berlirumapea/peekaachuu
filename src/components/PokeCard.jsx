@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import Container from "./Container";
+import Image from "next/image";
 
 export const PokesContainer = styled(Container)`
   padding: 1rem;
@@ -32,13 +33,20 @@ const PokeCardContainer = styled.div`
     font-size: 0.8rem;
     line-height: 1;
     font-family: "Press Start 2P", cursive;
+    min-height: 1rem;
   }
 `;
 
 const PokeCard = ({ poke }) => {
   return (
     <PokeCardContainer>
-      <img alt={poke.name} src={poke.image} />
+      <Image
+        alt={poke.name}
+        src={poke.image}
+        layout="fixed"
+        width={96}
+        height={96}
+      />
       <div>{poke.name}</div>
     </PokeCardContainer>
   );
