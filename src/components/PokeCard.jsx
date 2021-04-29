@@ -42,6 +42,7 @@ const PokeCardContainer = styled.div`
     line-height: 1;
     font-family: "Press Start 2P", cursive;
     min-height: 1rem;
+    height: 1.2rem;
     color: inherit;
     text-decoration: none;
   }

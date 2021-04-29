@@ -123,7 +123,6 @@ const PokeModal = ({ pokeName, status, onClose = () => {}, ...props }) => {
             layout="fill"
             objectFit="contain"
             priority={true}
-            loading="eager"
           />
         </div>
 

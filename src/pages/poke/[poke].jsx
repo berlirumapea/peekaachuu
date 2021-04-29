@@ -45,7 +45,7 @@ const PokeDetailImage = styled.div`
 `;
 
 const DetailContainer = styled.div`
-  min-height: auto;
+  height: auto;
   border: 1px solid #eaeaea;
   background-color: white;
   padding: 1rem;

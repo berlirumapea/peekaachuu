@@ -1,4 +1,4 @@
-import { css } from "@emotion/react";
+import Image from "next/image";
 import styled from "@emotion/styled";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -79,9 +79,12 @@ const Page = ({ children, title }) => {
           {title ? (
             <H1>{title}</H1>
           ) : (
-            <img
-              src="https://i.pinimg.com/originals/de/8a/0f/de8a0f82f1449b48f71828ede116ecd9.png"
+            <Image
+              src="/s.png"
               alt="Pokenom logo"
+              layout="fixed"
+              width={125}
+              height={45}
             />
           )}
         </Nav>
