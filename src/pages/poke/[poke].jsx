@@ -1,36 +1,15 @@
+import React from "react";
 import styled from "@emotion/styled";
 import Head from "next/head";
+import Image from "next/image";
 import Page from "../../components/Page";
 import { PokemonDetailQuery } from "../../queries";
 import client from "../../app-apollo-client";
 import Container from "../../components/Container";
-import Image from "next/image";
-import { css } from "@emotion/react";
-
-export async function getServerSideProps(context) {
-  const { poke } = context.params;
-
-  const { data } = await client.query({
-    query: PokemonDetailQuery,
-    variables: {
-      pokemonName: poke,
-    },
-  });
-
-  // graphql-pokeapi doesn't provide data for
-  // capture_rate, so i need to do a `fetch` instead
-  const species = await fetch(data?.pokemon?.species?.url);
-
-  return {
-    props: {
-      poke: data?.pokemon,
-      species: await species.json(),
-    },
-  };
-}
+import PokeModal from "../../components/PokeModal";
 
 const PokeDetailContainer = styled(Container)`
-  padding: 0 1rem;
+  padding: 0 1rem 2rem 1rem;
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: repeat(4, 1fr);
@@ -71,6 +50,7 @@ const DetailContainer = styled.div`
   background-color: white;
   padding: 1rem;
   grid-area: ${(props) => props.gridArea};
+  box-shadow: rgb(49 53 59 / 12%) 0px 1px 6px 0px;
 
   h4 {
     margin: 0;
@@ -136,8 +116,66 @@ const Title = styled.h1`
   }
 `;
 
+const CatchButton = styled.button`
+  padding: 10px 2rem;
+  background-color: var(--primary);
+  border: 3px solid var(--tertiary);
+  border-radius: 999px;
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 200ms ease-in-out;
+
+  &:active {
+    transform: translateY(10px);
+  }
+`;
+
+export async function getServerSideProps(context) {
+  const { poke } = context.params;
+
+  const { data } = await client.query({
+    query: PokemonDetailQuery,
+    variables: {
+      pokemonName: poke,
+    },
+  });
+
+  // graphql-pokeapi doesn't provide data for
+  // capture_rate, so i need to do a `fetch` instead
+  const species = await fetch(data?.pokemon?.species?.url);
+  const body = await species.json();
+
+  return {
+    props: {
+      poke: data?.pokemon,
+      species: body,
+    },
+  };
+}
+
 export default function PokemonDetail({ poke, species }) {
   const title = poke?.name;
+  const captureRate = species?.capture_rate;
+
+  const [status, setStatus] = React.useState("");
+  const [showNamePokemon, setShowNamePokemon] = React.useState(false);
+
+  const catchPoke = React.useCallback(async () => {
+    const wait = (ms) => new Promise((res) => setTimeout(res, ms));
+    setStatus("getReady");
+    await wait(3000);
+    setStatus("readyToThrow");
+    await wait(3000);
+    if (captureRate > 50) {
+      setStatus("successCatch");
+      setShowNamePokemon(true);
+    } else {
+      setStatus("failCatch");
+    }
+  }, []);
 
   return (
     <div>
@@ -208,6 +246,12 @@ export default function PokemonDetail({ poke, species }) {
               ))}
             </PillWrapper>
           </DetailContainer>
+          <CatchButton onClick={catchPoke}>
+            Press to catch the poke!
+          </CatchButton>
+          {status === "" ? null : (
+            <PokeModal status={status} onClose={() => setStatus("")} />
+          )}
         </PokeDetailContainer>
       </Page>
     </div>

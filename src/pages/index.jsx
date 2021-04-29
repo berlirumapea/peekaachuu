@@ -9,13 +9,13 @@ import Container from "../components/Container";
 
 import client from "../app-apollo-client";
 import { PokemonsQuery } from "../queries";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 
 export async function getStaticProps() {
   const { data } = await client.query({
     query: PokemonsQuery,
     variables: {
-      limit: 20,
+      limit: 10,
       offset: 0,
     },
   });
