@@ -93,7 +93,7 @@ const DataRow = styled.div`
   }
 
   span {
-    &:first-child {
+    &:first-of-type {
       color: #656f7c;
       font-size: 0.75rem !important;
     }
@@ -117,19 +117,20 @@ const Title = styled.h1`
 `;
 
 const CatchButton = styled.button`
-  padding: 10px 2rem;
+  padding: 1rem 2rem;
   background-color: var(--primary);
   border: 3px solid var(--tertiary);
   border-radius: 999px;
   position: absolute;
   bottom: 2rem;
-  right: 2rem;
+  left: 50%;
   font-size: 1.2rem;
   cursor: pointer;
   transition: all 200ms ease-in-out;
+  transform: translate(-50%, 0);
 
   &:active {
-    transform: translateY(10px);
+    margin-bottom: -10px;
   }
 `;
 
@@ -209,10 +210,6 @@ export default function PokemonDetail({ poke, species }) {
             <DataRow>
               <span>Weight</span>
               <span>{poke?.weight / 10}kg</span>
-            </DataRow>
-            <DataRow>
-              <span>Shape</span>
-              <span>{species?.shape?.name}</span>
             </DataRow>
             <DataRow>
               <span>Owned</span>

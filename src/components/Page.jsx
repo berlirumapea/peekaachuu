@@ -47,19 +47,34 @@ const Nav = styled.nav`
 
   a {
     position: absolute;
-    left: 0;
     font-size: 0.875rem;
     cursor: pointer;
     text-decoration: none;
     &:hover {
       text-decoration: underline;
     }
+
+    &.back {
+      left: 0;
+    }
+
+    &.mypokes {
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      span {
+        font-size: 10px;
+        font-weight: 600;
+      }
+    }
   }
 `;
 
 const H1 = styled.h1`
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 500;
 `;
 
@@ -72,7 +87,7 @@ const Page = ({ children, title }) => {
         <Nav>
           {router.pathname !== "/" ? (
             <Link href="/">
-              <a>Back</a>
+              <a className="back">&#8592; Back</a>
             </Link>
           ) : null}
 
@@ -87,6 +102,20 @@ const Page = ({ children, title }) => {
               height={45}
             />
           )}
+          {router.pathname !== "/mypokes" ? (
+            <Link href="/mypokes">
+              <a className="mypokes">
+                <Image
+                  src="/pokeballs.png"
+                  layout="fixed"
+                  width={32}
+                  height={32}
+                  alt="My pokemon balls"
+                />
+                <span>My Pokes</span>
+              </a>
+            </Link>
+          ) : null}
         </Nav>
       </NavContainer>
       <Main>{children}</Main>
