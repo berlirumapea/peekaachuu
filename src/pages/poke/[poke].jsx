@@ -143,33 +143,36 @@ export async function getServerSideProps(context) {
     },
   });
 
-  // graphql-pokeapi doesn't provide data for
-  // capture_rate, so i need to do a `fetch` instead
-  const species = await fetch(data?.pokemon?.species?.url);
-  const body = await species.json();
-
   return {
     props: {
       poke: data?.pokemon,
-      species: body,
     },
   };
 }
 
 export default function PokemonDetail({ poke, species }) {
   const title = poke?.name;
-  const captureRate = species?.capture_rate;
 
   const [status, setStatus] = React.useState("");
   const [showNamePokemon, setShowNamePokemon] = React.useState(false);
+
+  const fetchSpecies = async () => {
+    // graphql-pokeapi doesn't provide data for
+    // capture_rate, so i need to do a `fetch` instead
+    const speciesData = await fetch(poke?.species?.url);
+    const data = await speciesData.json();
+    return data;
+  };
 
   const catchPoke = React.useCallback(async () => {
     const wait = (ms) => new Promise((res) => setTimeout(res, ms));
     setStatus("getReady");
     await wait(3000);
     setStatus("readyToThrow");
+    const species = await fetchSpecies();
+    console.log("speciess", species);
     await wait(3000);
-    if (captureRate > 50) {
+    if (species?.capture_rate > 50) {
       setStatus("successCatch");
       setShowNamePokemon(true);
     } else {

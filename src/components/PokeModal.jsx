@@ -67,6 +67,11 @@ const InputWrapper = styled.div`
     border-radius: 8px;
     font-weight: 600;
     color: inherit;
+    cursor: pointer;
+
+    &:disabled {
+      background-color: rgb(167 167 167);
+    }
   }
 
 `;
