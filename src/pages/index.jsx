@@ -9,7 +9,7 @@ import Container from "../components/Container";
 
 import client from "../app-apollo-client";
 import { PokemonsQuery } from "../queries";
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 
 export async function getStaticProps() {
   const { data } = await client.query({
@@ -32,35 +32,42 @@ export default function Home({ pokemons }) {
     return [0, 1, 2, 3, 4, 5].map((item) => <PokeCardPlaceholder key={item} />);
   }, []);
 
-  const { data, fetchMore, loading } = useQuery(PokemonsQuery, {
-    variables: {
-      offset: pokemons?.nextOffset,
-      limit: 10,
-    },
+  const [loadMore, { loading, data, fetchMore }] = useLazyQuery(PokemonsQuery, {
     fetchPolicy: "cache-and-network",
     notifyOnNetworkStatusChange: true,
   });
 
-  const onLoadMore = React.useCallback(() => {
-    return fetchMore({
-      variables: {
-        offset: data?.pokemons?.nextOffset,
-        limit: 10,
-      },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) return prev;
-        return Object.assign({}, prev, {
-          pokemons: {
-            ...fetchMoreResult.pokemons,
-            results: [
-              ...prev.pokemons.results,
-              ...fetchMoreResult.pokemons.results,
-            ],
-          },
-        });
-      },
-    });
-  }, [data]);
+  const onLoadMore = () => {
+    // fetchMore will be undefined if we dont run loadMore first
+    if (!fetchMore) {
+      return loadMore({
+        variables: {
+          offset: pokemons?.nextOffset,
+          limit: 10,
+        },
+      });
+    } else {
+      // then we can use the pagination
+      return fetchMore({
+        variables: {
+          offset: data?.pokemons?.nextOffset,
+          limit: 10,
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return prev;
+          return Object.assign({}, prev, {
+            pokemons: {
+              ...fetchMoreResult.pokemons,
+              results: [
+                ...prev.pokemons.results,
+                ...fetchMoreResult.pokemons.results,
+              ],
+            },
+          });
+        },
+      });
+    }
+  };
 
   return (
     <div>

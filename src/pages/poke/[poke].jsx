@@ -5,6 +5,7 @@ import { PokemonDetailQuery } from "../../queries";
 import client from "../../app-apollo-client";
 import Container from "../../components/Container";
 import Image from "next/image";
+import { css } from "@emotion/react";
 
 export async function getServerSideProps(context) {
   const { poke } = context.params;
@@ -32,12 +33,20 @@ const PokeDetailContainer = styled(Container)`
   padding: 0 1rem;
   display: grid;
   grid-gap: 1rem;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   grid-template-rows: auto;
   grid-template-areas:
-    "logo detail detail"
-    "types types types"
-    "moves moves moves";
+    "logo info info info"
+    "abilities abilities abilities abilities"
+    "types types types types"
+    "moves moves moves moves";
+
+  @media screen and (min-width: 768px) {
+    grid-template-areas:
+      "logo logo info info"
+      "types types abilities abilities"
+      "moves moves moves moves";
+  }
 `;
 
 const PokeDetailImageContainer = styled.div`
@@ -53,6 +62,7 @@ const PokeDetailImage = styled.div`
   border: 5px solid ${(props) => props?.color?.name || "var(--secondary)"};
   height: 110px;
   width: 110px;
+  background-color: white;
 `;
 
 const DetailContainer = styled.div`
@@ -60,6 +70,7 @@ const DetailContainer = styled.div`
   border: 1px solid #eaeaea;
   background-color: white;
   padding: 1rem;
+  grid-area: ${(props) => props.gridArea};
 
   h4 {
     margin: 0;
@@ -71,36 +82,21 @@ const DetailContainer = styled.div`
   }
 `;
 
-const PokeBasicInfoContainer = styled(DetailContainer)`
-  grid-area: detail;
-`;
-
-const PokeMoveContainer = styled(DetailContainer)`
-  grid-area: moves;
-`;
-
 const PillWrapper = styled.div`
   display: grid;
   font-size: 12px;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  align-items: center;
   grid-gap: 4px;
 `;
 
 const PillBadge = styled.span`
   padding: 4px 4px;
-  background-color: #fcfbfb;
   border-radius: 999px;
-  border: 1px solid #eaeaea;
   text-align: center;
-  cursor: pointer;
 
-  &:hover {
-    background-color: rgba(255, 203, 5, 0.4);
-  }
-`;
-
-const PokeTypesContainer = styled(DetailContainer)`
-  grid-area: types;
+  background-color: rgba(255, 203, 5, 0.4);
+  border: 1px solid var(--tertiary);
 `;
 
 const DataRow = styled.div`
@@ -110,6 +106,11 @@ const DataRow = styled.div`
   align-items: center;
   margin: 6px 0;
   font-size: 1rem;
+  border-bottom: 1px solid #eaeaea;
+
+  &:last-of-type {
+    border-bottom: none;
+  }
 
   span {
     &:first-child {
@@ -119,9 +120,24 @@ const DataRow = styled.div`
   }
 `;
 
+const Title = styled.h1`
+  font-size: 2rem;
+  font-family: "Press Start 2P", cursive;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 2rem;
+
+  @media screen and (min-width: 500px) {
+    font-size: 3rem;
+  }
+
+  @media screen and (min-width: 768px) {
+    font-size: 4rem;
+  }
+`;
+
 export default function PokemonDetail({ poke, species }) {
-  console.log(poke, species);
-  const title = poke?.name || "Pokemon Detail";
+  const title = poke?.name;
 
   return (
     <div>
@@ -129,7 +145,8 @@ export default function PokemonDetail({ poke, species }) {
         <title>{title}</title>
       </Head>
 
-      <Page title={title}>
+      <Page title="Pokemon Detail">
+        <Title>{title}</Title>
         <PokeDetailContainer>
           <PokeDetailImageContainer>
             <PokeDetailImage color={species?.color}>
@@ -143,7 +160,7 @@ export default function PokemonDetail({ poke, species }) {
           </PokeDetailImageContainer>
 
           {/* Basic Info  */}
-          <PokeBasicInfoContainer>
+          <DetailContainer gridArea="info">
             <DataRow>
               <span>Height</span>
               <span>{poke?.height / 10}m</span>
@@ -160,27 +177,37 @@ export default function PokemonDetail({ poke, species }) {
               <span>Owned</span>
               <span>{0}</span>
             </DataRow>
-          </PokeBasicInfoContainer>
+          </DetailContainer>
 
-          {/* Moves */}
-          <PokeMoveContainer>
-            <h4>Moves</h4>
+          {/* Abilities */}
+          <DetailContainer gridArea="abilities">
+            <h4>Abilities</h4>
             <PillWrapper>
-              {poke?.moves.map(({ move }, i) => (
-                <PillBadge key={move.name || i}>{move.name}</PillBadge>
+              {poke?.abilities.map(({ ability }, i) => (
+                <PillBadge key={ability.name || i}>{ability.name}</PillBadge>
               ))}
             </PillWrapper>
-          </PokeMoveContainer>
+          </DetailContainer>
 
           {/* Types */}
-          <PokeTypesContainer>
+          <DetailContainer gridArea="types">
             <h4>Types</h4>
             <PillWrapper>
               {poke?.types.map(({ type }, i) => (
                 <PillBadge key={type.name || i}>{type.name}</PillBadge>
               ))}
             </PillWrapper>
-          </PokeTypesContainer>
+          </DetailContainer>
+
+          {/* Moves */}
+          <DetailContainer gridArea="moves">
+            <h4>Moves</h4>
+            <PillWrapper>
+              {poke?.moves.map(({ move }, i) => (
+                <PillBadge key={move.name || i}>{move.name}</PillBadge>
+              ))}
+            </PillWrapper>
+          </DetailContainer>
         </PokeDetailContainer>
       </Page>
     </div>

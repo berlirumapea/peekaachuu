@@ -1,4 +1,7 @@
+import { css } from "@emotion/react";
 import styled from "@emotion/styled";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 const PageContainer = styled.div`
   margin: auto;
@@ -33,23 +36,46 @@ const Nav = styled.nav`
   width: 100%;
   max-width: 60rem;
   margin: auto;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 
   img {
     width: 125px;
+  }
+
+  a {
+    position: absolute;
+    left: 0;
+    font-size: 0.875rem;
+    cursor: pointer;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
   }
 `;
 
 const H1 = styled.h1`
   margin: 0;
-  text-transform: capitalize;
+  font-size: 1.5rem;
+  font-weight: 500;
 `;
 
 const Page = ({ children, title }) => {
+  const router = useRouter();
+
   return (
     <PageContainer>
       <NavContainer>
         <Nav>
+          {router.pathname !== "/" ? (
+            <Link href="/">
+              <a>Back</a>
+            </Link>
+          ) : null}
+
           {title ? (
             <H1>{title}</H1>
           ) : (
