@@ -44,8 +44,12 @@ export function useMyPokemons() {
     return myPokesVar(newPokes);
   };
 
+  const checkTotalOwned = (pokeName) => {
+    return myPokesLocalStorage.filter((poke) => poke.name === pokeName).length;
+  };
+
   return {
     myPokes: useReactiveVar(myPokesVar),
-    operations: { catchPoke, releasePoke },
+    operations: { catchPoke, releasePoke, checkTotalOwned },
   };
 }

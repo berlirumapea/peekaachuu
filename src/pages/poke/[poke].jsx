@@ -7,6 +7,7 @@ import { PokemonDetailQuery } from "../../queries";
 import client from "../../apollo/client";
 import Container from "../../components/Container";
 import PokeModal from "../../components/PokeCatchModal";
+import { useMyPokemons } from "../../apollo/useMyPokemons";
 
 const PokeDetailContainer = styled(Container)`
   padding: 0 1rem 2rem 1rem;
@@ -165,6 +166,10 @@ export default function PokemonDetail({ poke, species }) {
     return data;
   };
 
+  const {
+    operations: { checkTotalOwned },
+  } = useMyPokemons();
+
   const catchPoke = React.useCallback(async () => {
     const wait = (ms) => new Promise((res) => setTimeout(res, ms));
 
@@ -215,7 +220,7 @@ export default function PokemonDetail({ poke, species }) {
             </DataRow>
             <DataRow>
               <span>Owned</span>
-              <span>{0}</span>
+              <span>{checkTotalOwned(poke?.name)}</span>
             </DataRow>
           </DetailContainer>
 
