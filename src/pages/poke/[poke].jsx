@@ -4,9 +4,9 @@ import Head from "next/head";
 import Image from "next/image";
 import Page from "../../components/Page";
 import { PokemonDetailQuery } from "../../queries";
-import client from "../../app-apollo-client";
+import client from "../../apollo/client";
 import Container from "../../components/Container";
-import PokeModal from "../../components/PokeModal";
+import PokeModal from "../../components/PokeCatchModal";
 
 const PokeDetailContainer = styled(Container)`
   padding: 0 1rem 2rem 1rem;
@@ -139,6 +139,7 @@ export async function getServerSideProps(context) {
 
   const { data } = await client.query({
     query: PokemonDetailQuery,
+    fetchPolicy: "cache-first",
     variables: {
       pokemonName: poke,
     },
@@ -155,7 +156,6 @@ export default function PokemonDetail({ poke, species }) {
   const title = poke?.name;
 
   const [status, setStatus] = React.useState("");
-  const [showNamePokemon, setShowNamePokemon] = React.useState(false);
 
   const fetchSpecies = async () => {
     // graphql-pokeapi doesn't provide data for
@@ -167,15 +167,16 @@ export default function PokemonDetail({ poke, species }) {
 
   const catchPoke = React.useCallback(async () => {
     const wait = (ms) => new Promise((res) => setTimeout(res, ms));
+
     setStatus("getReady");
     await wait(3000);
+
     setStatus("readyToThrow");
     const species = await fetchSpecies();
-    console.log("speciess", species);
     await wait(3000);
+
     if (species?.capture_rate > 50) {
       setStatus("successCatch");
-      setShowNamePokemon(true);
     } else {
       setStatus("failCatch");
     }
@@ -190,6 +191,7 @@ export default function PokemonDetail({ poke, species }) {
       <Page title="Pokemon Detail">
         <Title>{title}</Title>
         <PokeDetailContainer>
+          {/* Poke Image */}
           <PokeDetailImageContainer>
             <PokeDetailImage color={species?.color}>
               <Image
@@ -221,7 +223,7 @@ export default function PokemonDetail({ poke, species }) {
           <DetailContainer gridArea="abilities">
             <h4>Abilities</h4>
             <PillWrapper>
-              {poke?.abilities.map(({ ability }, i) => (
+              {poke?.abilities?.map(({ ability }, i) => (
                 <PillBadge key={ability.name || i}>{ability.name}</PillBadge>
               ))}
             </PillWrapper>
@@ -231,7 +233,7 @@ export default function PokemonDetail({ poke, species }) {
           <DetailContainer gridArea="types">
             <h4>Types</h4>
             <PillWrapper>
-              {poke?.types.map(({ type }, i) => (
+              {poke?.types?.map(({ type }, i) => (
                 <PillBadge key={type.name || i}>{type.name}</PillBadge>
               ))}
             </PillWrapper>
@@ -241,7 +243,7 @@ export default function PokemonDetail({ poke, species }) {
           <DetailContainer gridArea="moves">
             <h4>Moves</h4>
             <PillWrapper>
-              {poke?.moves.map(({ move }, i) => (
+              {poke?.moves?.map(({ move }, i) => (
                 <PillBadge key={move.name || i}>{move.name}</PillBadge>
               ))}
             </PillWrapper>
@@ -250,7 +252,11 @@ export default function PokemonDetail({ poke, species }) {
             Press to catch the poke!
           </CatchButton>
           {status === "" ? null : (
-            <PokeModal status={status} onClose={() => setStatus("")} />
+            <PokeModal
+              poke={poke}
+              status={status}
+              onClose={() => setStatus("")}
+            />
           )}
         </PokeDetailContainer>
       </Page>

@@ -7,7 +7,7 @@ const PageContainer = styled.div`
   margin: auto;
   height: 100vh;
   position: relative;
-  padding-top: 3.5rem;
+  padding-top: 4.1rem;
 `;
 
 const Main = styled.main`

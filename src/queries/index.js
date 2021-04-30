@@ -47,3 +47,16 @@ export const PokemonDetailQuery = gql`
     }
   }
 `;
+
+export const typeDefs = gql`
+  extend type Query {
+    myPokes: [MyPoke]
+  }
+
+  extend type MyPoke {
+    id: Int!
+    name: String
+    image: String
+    nickname: String
+  }
+`;

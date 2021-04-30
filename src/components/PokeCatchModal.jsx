@@ -2,6 +2,8 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import Image from "next/image";
 import React from "react";
+import { useMyPokemons } from "../apollo/useMyPokemons";
+import { useRouter } from "next/router";
 
 const ModalWrapper = styled.div`
   position: absolute;
@@ -95,14 +97,28 @@ const statuses = {
   },
 };
 
-const PokeModal = ({ pokeName, status, onClose = () => {}, ...props }) => {
+const PokeModal = ({ poke, status, onClose = () => {}, ...props }) => {
   const [name, setName] = React.useState("");
+
+  const router = useRouter();
+
+  const {
+    operations: { catchPoke },
+  } = useMyPokemons();
 
   const nameOnChange = (event) => {
     setName(event.target.value);
   };
 
-  const onSave = () => {};
+  const onSave = () => {
+    catchPoke({
+      name: poke?.name,
+      image: poke?.sprites?.front_default,
+      nickname: name,
+    });
+
+    router.push("/mypokes");
+  };
 
   return (
     <ModalWrapper {...props}>
@@ -122,6 +138,8 @@ const PokeModal = ({ pokeName, status, onClose = () => {}, ...props }) => {
           `}
           key={statuses[status].name}
         >
+          {/* Because loading gif sometimes takes time,
+          So I preload this using priority == true */}
           <Image
             alt={statuses[status].name}
             src={statuses[status].url}
