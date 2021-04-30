@@ -204,6 +204,7 @@ export default function PokemonDetail({ poke, species }) {
                 layout="fixed"
                 width={100}
                 height={100}
+                alt="Pokemon image"
               />
             </PokeDetailImage>
           </PokeDetailImageContainer>
