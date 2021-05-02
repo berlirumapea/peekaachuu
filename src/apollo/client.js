@@ -1,4 +1,6 @@
 import { ApolloClient, InMemoryCache, makeVar } from "@apollo/client";
+import fetch from "cross-fetch";
+import { createHttpLink } from "apollo-link-http";
 import { typeDefs } from "../queries";
 
 export const cache = new InMemoryCache({
@@ -18,7 +20,10 @@ export const cache = new InMemoryCache({
 export const myPokesVar = makeVar([]);
 
 const client = new ApolloClient({
-  uri: "https://graphql-pokeapi.vercel.app/api/graphql",
+  link: createHttpLink({
+    uri: "https://graphql-pokeapi.vercel.app/api/graphql",
+    fetch: fetch,
+  }),
   cache,
   typeDefs: typeDefs,
 });

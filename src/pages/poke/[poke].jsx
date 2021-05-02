@@ -2,6 +2,8 @@ import React from "react";
 import styled from "@emotion/styled";
 import Head from "next/head";
 import Image from "next/image";
+import fetch from "cross-fetch";
+
 import Page from "../../components/Page";
 import { PokemonDetailQuery } from "../../queries";
 import client from "../../apollo/client";

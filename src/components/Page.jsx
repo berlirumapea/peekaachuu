@@ -87,24 +87,27 @@ const Page = ({ children, title }) => {
         <Nav>
           {router.pathname !== "/" ? (
             <Link href="/">
-              <a className="back">&#8592; Back</a>
+              <a className="back" data-testid="back-link">
+                &#8592; Back
+              </a>
             </Link>
           ) : null}
 
           {title ? (
-            <H1>{title}</H1>
+            <H1 data-testid="page-title">{title}</H1>
           ) : (
             <Image
               src="/s.png"
-              alt="Pokenom logo"
+              alt="Pokemon logo"
               layout="fixed"
               width={125}
               height={45}
+              data-testid="pokemon-logo"
             />
           )}
           {router.pathname !== "/mypokes" ? (
             <Link href="/mypokes">
-              <a className="mypokes">
+              <a className="mypokes" data-testid="mypokes-link">
                 <Image
                   src="/pokeballs.png"
                   layout="fixed"

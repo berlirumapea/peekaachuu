@@ -76,7 +76,7 @@ const PokeCardContainer = styled.div`
   }
 `;
 
-const PokeCard = ({ poke }) => {
+const PokeCard = ({ poke, ...props }) => {
   const {
     operations: { releasePoke },
   } = useMyPokemons();
@@ -91,7 +91,7 @@ const PokeCard = ({ poke }) => {
   };
 
   return (
-    <PokeCardContainer>
+    <PokeCardContainer {...props}>
       <Link href={`/poke/${poke.name}`}>
         <a>
           <Image
