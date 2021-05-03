@@ -16,14 +16,10 @@ jest.mock("next/image", () => ({ src, alt, ...props }) => (
   <img src={src} alt={alt} {...props} />
 ));
 
-describe("Page", () => {
-  let cache;
-
+describe("Home page", () => {
   afterEach(cleanup);
 
   beforeEach(() => {
-    cache = new InMemoryCache();
-
     const mocks = [
       {
         request: {

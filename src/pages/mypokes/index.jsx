@@ -14,9 +14,13 @@ export default function MyPokes() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Page title="My Pokes">
-        <PokesContainer>
+        <PokesContainer data-testid="poke-container">
           {myPokes?.map((poke, index) => (
-            <PokeCard poke={poke} key={poke.name + index} />
+            <PokeCard
+              poke={poke}
+              key={poke.name + index}
+              data-testid="mypoke-card"
+            />
           ))}
         </PokesContainer>
       </Page>

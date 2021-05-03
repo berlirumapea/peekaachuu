@@ -37,14 +37,16 @@ const PokeDetailImageContainer = styled.div`
   justify-content: center;
   height: 100%;
   grid-area: logo;
-`;
-
-const PokeDetailImage = styled.div`
-  border-radius: 50%;
-  border: 5px solid ${(props) => props?.color?.name || "var(--secondary)"};
-  height: 110px;
-  width: 110px;
-  background-color: white;
+  border-radius: 12px;
+  background-image: linear-gradient(
+    to right top,
+    #d200ff,
+    #ff00ab,
+    #ff4b58,
+    #ffaf00,
+    #fff500
+  );
+  box-shadow: rgb(49 53 59 / 12%) 0px 1px 6px 0px;
 `;
 
 const DetailContainer = styled.div`
@@ -54,6 +56,7 @@ const DetailContainer = styled.div`
   padding: 1rem;
   grid-area: ${(props) => props.gridArea};
   box-shadow: rgb(49 53 59 / 12%) 0px 1px 6px 0px;
+  border-radius: 12px;
 
   h4 {
     margin: 0;
@@ -155,7 +158,7 @@ export async function getServerSideProps(context) {
   };
 }
 
-export default function PokemonDetail({ poke, species }) {
+export default function PokemonDetail({ poke }) {
   const title = poke?.name;
 
   const [status, setStatus] = React.useState("");
@@ -179,12 +182,17 @@ export default function PokemonDetail({ poke, species }) {
     await wait(3000);
 
     setStatus("readyToThrow");
-    const species = await fetchSpecies();
-    await wait(3000);
+    try {
+      const species = await fetchSpecies();
+      await wait(3000);
 
-    if (species?.capture_rate > 50) {
-      setStatus("successCatch");
-    } else {
+      if (species?.capture_rate > 50) {
+        setStatus("successCatch");
+      } else {
+        setStatus("failCatch");
+      }
+    } catch (err) {
+      console.log("Error", err);
       setStatus("failCatch");
     }
   }, []);
@@ -196,19 +204,17 @@ export default function PokemonDetail({ poke, species }) {
       </Head>
 
       <Page title="Pokemon Detail">
-        <Title>{title}</Title>
+        <Title data-testid="poke-title">{title}</Title>
         <PokeDetailContainer>
           {/* Poke Image */}
           <PokeDetailImageContainer>
-            <PokeDetailImage color={species?.color}>
-              <Image
-                src={poke?.sprites?.front_default}
-                layout="fixed"
-                width={100}
-                height={100}
-                alt="Pokemon image"
-              />
-            </PokeDetailImage>
+            <Image
+              src={poke?.sprites?.front_default}
+              layout="fixed"
+              width={100}
+              height={100}
+              alt="Pokemon image"
+            />
           </PokeDetailImageContainer>
 
           {/* Basic Info  */}
@@ -232,7 +238,9 @@ export default function PokemonDetail({ poke, species }) {
             <h4>Abilities</h4>
             <PillWrapper>
               {poke?.abilities?.map(({ ability }, i) => (
-                <PillBadge key={ability.name || i}>{ability.name}</PillBadge>
+                <PillBadge key={ability.name || i} data-testid="ability">
+                  {ability.name}
+                </PillBadge>
               ))}
             </PillWrapper>
           </DetailContainer>
@@ -242,7 +250,9 @@ export default function PokemonDetail({ poke, species }) {
             <h4>Types</h4>
             <PillWrapper>
               {poke?.types?.map(({ type }, i) => (
-                <PillBadge key={type.name || i}>{type.name}</PillBadge>
+                <PillBadge key={type.name || i} data-testid="type">
+                  {type.name}
+                </PillBadge>
               ))}
             </PillWrapper>
           </DetailContainer>
@@ -252,7 +262,9 @@ export default function PokemonDetail({ poke, species }) {
             <h4>Moves</h4>
             <PillWrapper>
               {poke?.moves?.map(({ move }, i) => (
-                <PillBadge key={move.name || i}>{move.name}</PillBadge>
+                <PillBadge key={move.name || i} data-testid="move">
+                  {move.name}
+                </PillBadge>
               ))}
             </PillWrapper>
           </DetailContainer>
@@ -264,6 +276,7 @@ export default function PokemonDetail({ poke, species }) {
               poke={poke}
               status={status}
               onClose={() => setStatus("")}
+              data-testid="poke-modal"
             />
           )}
         </PokeDetailContainer>

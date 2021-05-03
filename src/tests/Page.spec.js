@@ -1,7 +1,7 @@
 import Page from "../components/Page";
 import { mockRouter, screen, render } from "./utils/test-utils";
 
-describe("Page", () => {
+describe("Page component", () => {
   it("renders page component", () => {
     render(<Page />);
 

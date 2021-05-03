@@ -136,7 +136,6 @@ const PokeModal = ({ poke, status, onClose = () => {}, ...props }) => {
             height: 350px;
             position: relative;
           `}
-          key={statuses[status].name}
         >
           {/* Because loading gif sometimes takes time,
           So I preload this using priority == true */}
@@ -145,7 +144,7 @@ const PokeModal = ({ poke, status, onClose = () => {}, ...props }) => {
             src={statuses[status].url}
             layout="fill"
             objectFit="contain"
-            priority={true}
+            priority
           />
         </div>
 

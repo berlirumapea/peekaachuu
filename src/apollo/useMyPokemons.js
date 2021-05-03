@@ -7,6 +7,7 @@ export function useMyPokemons() {
     set initial value of reactive variable
     from localStorage
   */
+
   const myPokesLocalStorage = localStorage.getItem("myPokes")
     ? JSON.parse(localStorage.getItem("myPokes"))
     : [];
